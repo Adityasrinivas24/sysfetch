@@ -11,7 +11,7 @@
 #define MAGENTA "\033[1;35m" 
 #define CYAN "\033[1;36m"
 
-struct utsname uname_info;
+struct utsname unameinfo;
 char *username, *shellname;
 
 static char *name()
@@ -23,19 +23,28 @@ static char *name()
 
 static char *os()
 {
-    struct utsname uname_info;
-    if (uname(&uname_info))
+    struct utsname unameinfo;
+    if (uname(&unameinfo))
         exit(-1);
-    printf("%sOS:%s%s\n", MAGENTA, CYAN, uname_info.sysname);
+    printf("%sOS:%s%s\n", MAGENTA, CYAN, unameinfo.sysname);
+    return 0;
+}
+
+static char *machine()
+{
+    struct utsname unameinfo;
+    if (uname(&unameinfo))
+        exit(-1);
+    printf("%sArchitecture:%s%s\n", MAGENTA, CYAN, unameinfo.machine);
     return 0;
 }
 
 static char *kernel()
 {
-    struct utsname uname_info;
-    if (uname(&uname_info))
+    struct utsname unameinfo;
+    if (uname(&unameinfo))
         exit(-1);
-    printf("%sKernel:%s%s\n", MAGENTA, CYAN, uname_info.release);
+    printf("%sKernel:%s%s\n", MAGENTA, CYAN, unameinfo.release);
     return 0;
 }
 
@@ -75,12 +84,44 @@ static void uptime()
         printf("%sUptime:%s %d Days, %d Hours, %d Mins\n", MAGENTA, CYAN, days, hours, mins);
 }
 
+size_t ramUsage()
+{
+    struct sysinfo meminfo;
+
+    if (sysinfo(&meminfo))
+        exit(-1);
+
+    double totalRam = (double)meminfo.totalram / (1024 * 1024 * 1024);
+    double freeRam = (double)meminfo.freeram / (1024 * 1024 * 1024);
+    double usedRam = totalRam - freeRam;
+
+    printf("%sRam used:%s %.2f GB / %.2f GB\n", MAGENTA, CYAN, usedRam, totalRam);
+
+    return 0;
+}
+
+static char *process()
+{
+    struct sysinfo meminfo;
+
+    if (sysinfo(&meminfo))
+        exit(-1);
+
+    unsigned short processes = meminfo.procs;
+    printf("%sProcesses Running:%s%d\n", MAGENTA, CYAN, processes);
+    return 0;
+}
+
 int main()
 {
     name();
     os();
+    machine();
     kernel();
+    ramUsage();
+    process();
     shell();
     uptime();
+
     return 0;
 }
