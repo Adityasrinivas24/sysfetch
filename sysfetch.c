@@ -7,21 +7,21 @@
 #include<pwd.h>
 #include<string.h>
 
-//Colors
-#define MAGENTA "\033[1;35m" 
-#define CYAN "\033[1;36m"
+//Terminal Colors
+#define MAGENTA "\033[1;35m" //ANSI Escape sequence for MAGENTA
+#define CYAN "\033[1;36m" //ANSI Escape sequence for CYAN
 
 struct utsname unameinfo;
 char *username, *shellname;
 
-static char *name()
+static char name()
 {
     username = getlogin();
     printf("%sUser:%s%s\n",MAGENTA,CYAN,username);
     return 0;
 }
 
-static char *os()
+static char os()
 {
     struct utsname unameinfo;
     if (uname(&unameinfo))
@@ -30,7 +30,7 @@ static char *os()
     return 0;
 }
 
-static char *machine()
+static char machine()
 {
     struct utsname unameinfo;
     if (uname(&unameinfo))
@@ -39,7 +39,7 @@ static char *machine()
     return 0;
 }
 
-static char *kernel()
+static char kernel()
 {
     struct utsname unameinfo;
     if (uname(&unameinfo))
@@ -48,7 +48,7 @@ static char *kernel()
     return 0;
 }
 
-static char *shell()
+static char shell()
 {
     shellname = getpwuid(geteuid())->pw_shell;
     printf("%sShell:%s%s\n", MAGENTA, CYAN, shellname);
@@ -60,7 +60,7 @@ static void uptime()
     double uptime;
     FILE *file = fopen("/proc/uptime", "r");
     if (file == NULL)
-        return;
+        exit(-1);
 
     fscanf(file, "%lf", &uptime);
     fclose(file);
@@ -100,7 +100,7 @@ size_t ramUsage()
     return 0;
 }
 
-static char *process()
+static char process()
 {
     struct sysinfo meminfo;
 
