@@ -1,5 +1,5 @@
 # sysfetch
-sysfetch is a command line tool written in C that provides system information.
+To use this util 
 
 Clone this repository                                                                     
 run `cd sysfetch`                                                                             
